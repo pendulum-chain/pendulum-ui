@@ -1,6 +1,6 @@
 {
-  "short_name": "Polkadot Apps",
-  "name": "Apps for interacting with a Polkadot node",
+  "short_name": "Pendulum",
+  "name": "App for interacting with Pendulum node",
   "icons": [
     {
       "src": "favicon.ico",

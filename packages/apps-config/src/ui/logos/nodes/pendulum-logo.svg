@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="138px" height="138px" viewBox="0 0 138 138" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Pendulum-wordmark</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Pendulum-wordmark" fill="#2C3131">
+            <path d="M69,0 C107.108,0 138,30.892 138,69 C138,107.108 107.108,138 69,138 C30.892,138 0,107.108 0,69 C0,30.892 30.892,0 69,0 Z M69,13.543 C38.372,13.543 13.543,38.373 13.543,69 C13.543,99.628 38.373,124.457 69,124.457 C99.628,124.457 124.457,99.627 124.457,69 C124.457,38.372 99.627,13.543 69,13.543 Z" id="Shape"></path>
+            <polygon id="Path" points="79.737 27.325 92.157 32.725 58.263 110.675 45.843 105.275"></polygon>
+        </g>
+    </g>
+</svg>
