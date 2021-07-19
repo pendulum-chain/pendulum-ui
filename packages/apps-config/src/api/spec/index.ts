@@ -96,6 +96,7 @@ import web3games from './web3games';
 import westlake from './westlake';
 import zCloak from './zCloak';
 import zeitgeist from './zeitgeist';
+import pendulum from './pendulum';
 import zenlink from './zenlink';
 import zero from './zero';
 
@@ -183,6 +184,7 @@ const spec: Record<string, OverrideBundleDefinition> = {
   opportunity,
   'origintrail-parachain': origintrail,
   parami,
+  pendulum: pendulum,
   'phala-collator': phalaParachain,
   'phala-node': phala,
   'phale-node': phala,

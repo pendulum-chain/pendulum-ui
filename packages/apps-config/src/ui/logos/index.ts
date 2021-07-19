@@ -123,6 +123,7 @@ import nodeWestlake from './nodes/westlake.png';
 import nodeWhala from './nodes/whala.svg';
 import nodeZCloak from './nodes/zCloak.svg';
 import nodeZeitgeist from './nodes/zeitgeist.png';
+import nodePendulum from './nodes/pendulum-logo.svg';
 import nodeZenlink from './nodes/zenlink.svg';
 import nodeZero from './nodes/zero.svg';
 // last-resort fallback, just something empty
@@ -376,6 +377,7 @@ export const nodeLogos = Object.entries({
   'zcloak node': nodeZCloak,
   'Zeitgeist Collator': nodeZeitgeist,
   'Zeitgeist Node': nodeZeitgeist,
+  'Pendulum Node': nodePendulum,
   Zenlink: nodeZenlink,
   'Zenlink Collator': nodeZenlink
 }).reduce<Record<string, unknown>>((logos, [node, logo]) => ({
@@ -464,6 +466,7 @@ export const namedLogos: Record<string, unknown> = {
   opportunity: nodeOpportunity,
   'origintrail-parachain-testnet': nodeOriginTrail,
   pangolin: nodePangolin,
+  pendulum: nodePendulum,
   phala: nodePhala,
   phoenix: nodePhoenix,
   plasm: nodePlasm,

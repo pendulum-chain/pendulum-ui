@@ -442,6 +442,13 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
       }
     },
     {
+      info: 'pendulum',
+      text: t('rpc.test.pendulum', 'Pendulum', { ns: 'apps-config' }),
+      providers: {
+        Pendulum: 'ws://127.0.0.1:9944'
+      }
+    },
+    {
       info: 'zero',
       text: t('rpc.test.zero', 'Zero', { ns: 'apps-config' }),
       providers: {
