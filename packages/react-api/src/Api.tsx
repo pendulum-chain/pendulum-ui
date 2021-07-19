@@ -9,7 +9,6 @@ import type { ApiProps, ApiState } from './types';
 
 import { Detector } from '@substrate/connect';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import store from 'store';
 
 import { WsProvider } from '@polkadot/api';
 import { ApiPromise } from '@polkadot/api/promise';
@@ -26,7 +25,6 @@ import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defau
 
 import ApiContext from './ApiContext';
 import registry from './typeRegistry';
-import { decodeUrlTypes } from './urlTypes';
 
 interface Props {
   children: React.ReactNode;
@@ -66,15 +64,6 @@ function isKeyringLoaded () {
   } catch {
     return false;
   }
-}
-
-function getDevTypes (): Record<string, Record<string, string>> {
-  const types = decodeUrlTypes() || store.get('types', {}) as Record<string, Record<string, string>>;
-  const names = Object.keys(types);
-
-  names.length && console.log('Injected types:', names.join(', '));
-
-  return types;
 }
 
 async function getInjectedAccounts (injectedPromise: Promise<InjectedExtension[]>): Promise<InjectedAccountExt[]> {
@@ -205,9 +194,27 @@ function Api ({ apiUrl, children, store }: Props): React.ReactElement<Props> | n
     }
 
     const signer = new ApiSigner(registry, queuePayload, queueSetTxStatus);
-    const types = getDevTypes();
+    const types = {
+      Amount: 'i128',
+      AmountOf: 'Amount',
+      BalanceOf: 'Balance',
+      Currency: 'CurrencyId',
+      CurrencyId: { _enum: ['Native', 'USDC'] },
+      CurrencyIdOf: 'CurrencyId',
+      DepositPayload: {
+        _struct: {
+          amount: 'Balance',
+          currency_id: 'CurrencyId',
+          destination: 'AccountId',
+          signed_by: 'AccountId'
+        }
+      },
+      MyAccountData: { free: 'Balance', frozen: 'Balance', reserved: 'Balance' }
+    } as any as Record<string, Record<string, string>>;
 
-    api = new ApiPromise({ provider, registry, signer, types, typesBundle, typesChain });
+    const typesAlias = { tokens: { AccountData: 'MyAccountData' } };
+
+    api = new ApiPromise({ provider, registry, signer, types, typesAlias, typesBundle, typesChain });
 
     api.on('connected', () => setIsApiConnected(true));
     api.on('disconnected', () => setIsApiConnected(false));

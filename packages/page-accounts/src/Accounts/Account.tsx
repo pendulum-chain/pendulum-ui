@@ -585,7 +585,7 @@ function Account ({ account: { address, meta }, className = '', delegation, filt
         <AddressInfo
           address={address}
           withBalance
-          withBalanceToggle
+          withBalanceToggle={false}
           withExtended={false}
         />
       </td>
