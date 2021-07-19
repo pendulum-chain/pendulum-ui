@@ -10,7 +10,6 @@ import { availableExtensions } from '@polkadot/apps-config';
 import { isWeb3Injected } from '@polkadot/extension-dapp';
 import { onlyOnWeb } from '@polkadot/react-api/hoc';
 import { useApi } from '@polkadot/react-hooks';
-import { stringUpperFirst } from '@polkadot/util';
 
 import { useTranslation } from '../translate';
 import Banner from './Banner';
