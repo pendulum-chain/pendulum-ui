@@ -21,7 +21,8 @@ const bundle: OverrideBundleDefinition = {
       CurrencyId: {
         _enum: [
           'Native',
-          'USDC'
+          'USDC',
+          'EUR'
         ]
       },
       CurrencyIdOf: 'CurrencyId',
