@@ -54,7 +54,8 @@ interface Props {
   democracyLocks?: DeriveDemocracyLock[];
   extraInfo?: [string, string][];
   stakingInfo?: DeriveStakingAccount;
-  tokensQueryAll?: AccountData;
+  tokensEUR?: AccountData;
+  tokensUSDC?: AccountData;
   votingOf?: Voting;
   withBalance?: boolean | BalanceActiveType;
   withBalanceToggle?: false;
@@ -219,7 +220,7 @@ function renderValidatorPrefs ({ stakingInfo, withValidatorPrefs = false }: Prop
   );
 }
 
-function createBalanceItems (formatIndex: number, usdc: Balance | undefined, lookup: Record<string, string>, t: TFunction, { address, balanceDisplay, balancesAll, bestNumber, democracyLocks, isAllLocked, otherBonded, ownBonded, stakingInfo, votingOf, withBalanceToggle }: { address: string; balanceDisplay: BalanceActiveType; balancesAll?: DeriveBalancesAll | DeriveBalancesAccountData; bestNumber: BlockNumber; democracyLocks?: DeriveDemocracyLock[]; isAllLocked: boolean; otherBonded: BN[]; ownBonded: BN; stakingInfo?: DeriveStakingAccount; votingOf?: Voting; withBalanceToggle: boolean }): React.ReactNode {
+function createBalanceItems (formatIndex: number, usdc: Balance | undefined, eur: Balance | undefined, lookup: Record<string, string>, t: TFunction, { address, balanceDisplay, balancesAll, bestNumber, democracyLocks, isAllLocked, otherBonded, ownBonded, stakingInfo, votingOf, withBalanceToggle }: { address: string; balanceDisplay: BalanceActiveType; balancesAll?: DeriveBalancesAll | DeriveBalancesAccountData; bestNumber: BlockNumber; democracyLocks?: DeriveDemocracyLock[]; isAllLocked: boolean; otherBonded: BN[]; ownBonded: BN; stakingInfo?: DeriveStakingAccount; votingOf?: Voting; withBalanceToggle: boolean }): React.ReactNode {
   const allItems: React.ReactNode[] = [];
 
   !withBalanceToggle && balancesAll && balanceDisplay.total && allItems.push(
@@ -249,6 +250,16 @@ function createBalanceItems (formatIndex: number, usdc: Balance | undefined, loo
         className='result'
         formatIndex={formatIndex}
         value={usdc}
+      />
+    </React.Fragment>
+  );
+  eur && eur.gtn(0) && allItems.push(
+    <React.Fragment key={'eur'}>
+      <Label label={t<string>('EUR')} />
+      <FormatBalance
+        className='result'
+        formatIndex={formatIndex}
+        value={eur}
       />
     </React.Fragment>
   );
@@ -419,7 +430,7 @@ function createBalanceItems (formatIndex: number, usdc: Balance | undefined, loo
   );
 }
 
-function renderBalances (props: Props, usdc: Balance | undefined, lookup: Record<string, string>, bestNumber: BlockNumber | undefined, t: TFunction): React.ReactNode[] {
+function renderBalances (props: Props, usdc: Balance | undefined, eur: Balance | undefined, lookup: Record<string, string>, bestNumber: BlockNumber | undefined, t: TFunction): React.ReactNode[] {
   const { address, balancesAll, democracyLocks, stakingInfo, votingOf, withBalance = true, withBalanceToggle = false } = props;
   const balanceDisplay = withBalance === true
     ? DEFAULT_BALANCES
@@ -432,10 +443,10 @@ function renderBalances (props: Props, usdc: Balance | undefined, lookup: Record
   const [ownBonded, otherBonded] = calcBonded(stakingInfo, balanceDisplay.bonded);
   const isAllLocked = !!balancesAll && balancesAll.lockedBreakdown.some(({ amount }): boolean => amount?.isMax());
   const baseOpts = { address, balanceDisplay, bestNumber, democracyLocks, isAllLocked, otherBonded, ownBonded, votingOf, withBalanceToggle };
-  const items = [createBalanceItems(0, usdc, lookup, t, { ...baseOpts, balancesAll, stakingInfo })];
+  const items = [createBalanceItems(0, usdc, eur, lookup, t, { ...baseOpts, balancesAll, stakingInfo })];
 
   withBalanceToggle && balancesAll?.additional.length && balancesAll.additional.forEach((balancesAll, index): void => {
-    items.push(createBalanceItems(index + 1, usdc, lookup, t, { ...baseOpts, balancesAll }));
+    items.push(createBalanceItems(index + 1, usdc, eur, lookup, t, { ...baseOpts, balancesAll }));
   });
 
   return items;
@@ -456,7 +467,7 @@ function AddressInfo (props: Props): React.ReactElement<Props> {
   return (
     <div className={`ui--AddressInfo${className}${withBalanceToggle ? ' ui--AddressInfo-expander' : ''}`}>
       <div className={`column${withBalanceToggle ? ' column--expander' : ''}`}>
-        {renderBalances(props, props.tokensQueryAll?.free, lookup.current, bestNumber, t)}
+        {renderBalances(props, props.tokensUSDC?.free, props.tokensEUR?.free, lookup.current, bestNumber, t)}
         {withHexSessionId && withHexSessionId[0] && (
           <>
             <Label label={t<string>('session keys')} />
@@ -558,7 +569,11 @@ export default withMulti(
     }],
     ['query.tokens.accounts', {
       paramPick: (props) => [(props as {address: string}).address, { TokenSymbol: { code: 'USDC' } }],
-      propName: 'tokensQueryAll'
+      propName: 'tokensUSDC'
+    }],
+    ['query.tokens.accounts', {
+      paramPick: (props) => [(props as {address: string}).address, { TokenSymbol: { code: 'EUR' } }],
+      propName: 'tokensEUR'
     }],
     ['derive.staking.account', {
       paramName: 'address',

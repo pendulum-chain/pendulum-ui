@@ -64,6 +64,7 @@ import opportunity from './opportunity';
 import origintrail from './origintrail';
 import pangolin from './pangolin';
 import parami from './parami';
+import pendulum from './pendulum';
 import phala from './phala';
 import phalaParachain from './phala-parachain';
 import phoenix from './phoenix';
@@ -96,7 +97,6 @@ import web3games from './web3games';
 import westlake from './westlake';
 import zCloak from './zCloak';
 import zeitgeist from './zeitgeist';
-import pendulum from './pendulum';
 import zenlink from './zenlink';
 import zero from './zero';
 
