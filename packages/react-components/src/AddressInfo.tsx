@@ -557,7 +557,7 @@ export default withMulti(
       skipIf: skipBalancesIf
     }],
     ['query.tokens.accounts', {
-      paramPick: (props) => [(props as {address: string}).address, 'USDC'],
+      paramPick: (props) => [(props as {address: string}).address, { TokenSymbol: { code: 'USDC' } }],
       propName: 'tokensQueryAll'
     }],
     ['derive.staking.account', {

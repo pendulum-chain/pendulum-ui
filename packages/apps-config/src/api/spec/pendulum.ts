@@ -19,10 +19,14 @@ const bundle: OverrideBundleDefinition = {
         reserved: 'Balance'
       },
       CurrencyId: {
-        _enum: [
-          'Native',
-          'USDC'
-        ]
+        _enum: {
+          Native: 'String',
+          TokenSymbol: 'TokenSymbol',
+          USDC: 'String'
+        }
+      },
+      TokenSymbol: {
+        code: '[u8; 4]'
       },
       CurrencyIdOf: 'CurrencyId',
       Currency: 'CurrencyId',
