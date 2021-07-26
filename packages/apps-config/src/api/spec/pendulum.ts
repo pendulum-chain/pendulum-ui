@@ -21,8 +21,7 @@ const bundle: OverrideBundleDefinition = {
       CurrencyId: {
         _enum: {
           Native: 'String',
-          TokenSymbol: 'TokenSymbol',
-          USDC: 'String'
+          TokenSymbol: 'TokenSymbol'
         }
       },
       TokenSymbol: {
