@@ -568,11 +568,11 @@ export default withMulti(
       skipIf: skipBalancesIf
     }],
     ['query.tokens.accounts', {
-      paramPick: (props) => [(props as {address: string}).address, 'USDC'],
+      paramPick: (props) => [(props as {address: string}).address, { TokenSymbol: { code: 'USDC' } }],
       propName: 'tokensUSDC'
     }],
     ['query.tokens.accounts', {
-      paramPick: (props) => [(props as {address: string}).address, 'EUR'],
+      paramPick: (props) => [(props as {address: string}).address, { TokenSymbol: { code: 'EUR' } }],
       propName: 'tokensEUR'
     }],
     ['derive.staking.account', {
