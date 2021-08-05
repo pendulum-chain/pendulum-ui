@@ -568,11 +568,13 @@ export default withMulti(
       skipIf: skipBalancesIf
     }],
     ['query.tokens.accounts', {
-      paramPick: (props) => [(props as {address: string}).address, { AlphaNum4: { code: 'USDC' } }],
+      // Issuer: GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC
+      paramPick: (props) => [(props as {address: string}).address, { AlphaNum4: { code: 'USDC', issuer: [20, 209, 150, 49, 176, 55, 23, 217, 171, 154, 54, 110, 16, 50, 30, 226, 102, 231, 46, 199, 108, 171, 97, 144, 240, 161, 51, 109, 72, 34, 159, 139] } }],
       propName: 'tokensUSDC'
     }],
     ['query.tokens.accounts', {
-      paramPick: (props) => [(props as {address: string}).address, { AlphaNum4: { code: 'EURO' } }],
+      // Issuer: GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC
+      paramPick: (props) => [(props as {address: string}).address, { AlphaNum4: { code: 'EUR\0', issuer: [20, 209, 150, 49, 176, 55, 23, 217, 171, 154, 54, 110, 16, 50, 30, 226, 102, 231, 46, 199, 108, 171, 97, 144, 240, 161, 51, 109, 72, 34, 159, 139] } }],
       propName: 'tokensEUR'
     }],
     ['derive.staking.account', {
