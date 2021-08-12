@@ -572,7 +572,7 @@ export default withMulti(
       propName: 'tokensUSDC'
     }],
     ['query.tokens.accounts', {
-      paramPick: (props) => [(props as {address: string}).address, { TokenSymbol: { code: 'EUR' } }],
+      paramPick: (props) => [(props as {address: string}).address, { TokenSymbol: { code: 'EUR\0' } }],
       propName: 'tokensEUR'
     }],
     ['derive.staking.account', {
