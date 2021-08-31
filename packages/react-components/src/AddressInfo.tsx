@@ -10,12 +10,14 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import { withCalls, withMulti } from '@polkadot/react-api/hoc';
+import { withCallsArray } from '@polkadot/react-api/hoc/calls';
 import { Expander, Icon, Tooltip } from '@polkadot/react-components';
 import { useBestNumber } from '@polkadot/react-hooks';
 import { BlockToTime, FormatBalance } from '@polkadot/react-query';
 import { AccountData } from '@polkadot/types/interfaces';
 import { BN_ZERO, formatBalance, formatNumber, hexToString, isObject } from '@polkadot/util';
 
+import allAssets from '../../../stellar_assets.json';
 import CryptoType from './CryptoType';
 import DemocracyLocks from './DemocracyLocks';
 import Label from './Label';
@@ -83,6 +85,36 @@ const DEFAULT_PREFS = {
   unstakeThreshold: true,
   validatorPayment: true
 };
+
+const basicCalls = [
+  ['derive.balances.all', {
+    paramName: 'address',
+    propName: 'balancesAll',
+    skipIf: skipBalancesIf
+  }],
+  ['derive.staking.account', {
+    paramName: 'address',
+    propName: 'stakingInfo',
+    skipIf: skipStakingIf
+  }],
+  ['derive.democracy.locks', {
+    paramName: 'address',
+    propName: 'democracyLocks',
+    skipIf: skipStakingIf
+  }],
+  ['query.democracy.votingOf', {
+    paramName: 'address',
+    propName: 'votingOf',
+    skipIf: skipStakingIf
+  }]
+];
+
+const assetCalls = allAssets.map((asset) => {
+  return ['query.tokens.accounts', {
+    paramPick: (props: any) => [(props as {address: string}).address, { AlphaNum4: { code: asset.AlphaNum4.code, issuer: asset.AlphaNum4.issuer } }],
+    propName: 'tokens' + asset.AlphaNum4.code
+  }];
+});
 
 function lookupLock (lookup: Record<string, string>, lockId: LockIdentifier): string {
   const lockHex = lockId.toHex();
@@ -561,36 +593,5 @@ export default withMulti(
       }
     }
   `,
-  withCalls<Props>(
-    ['derive.balances.all', {
-      paramName: 'address',
-      propName: 'balancesAll',
-      skipIf: skipBalancesIf
-    }],
-    ['query.tokens.accounts', {
-      // Issuer: GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC
-      paramPick: (props) => [(props as {address: string}).address, { AlphaNum4: { code: 'USDC', issuer: [20, 209, 150, 49, 176, 55, 23, 217, 171, 154, 54, 110, 16, 50, 30, 226, 102, 231, 46, 199, 108, 171, 97, 144, 240, 161, 51, 109, 72, 34, 159, 139] } }],
-      propName: 'tokensUSDC'
-    }],
-    ['query.tokens.accounts', {
-      // Issuer: GAKNDFRRWA3RPWNLTI3G4EBSD3RGNZZOY5WKWYMQ6CQTG3KIEKPYWAYC
-      paramPick: (props) => [(props as {address: string}).address, { AlphaNum4: { code: 'EUR\0', issuer: [20, 209, 150, 49, 176, 55, 23, 217, 171, 154, 54, 110, 16, 50, 30, 226, 102, 231, 46, 199, 108, 171, 97, 144, 240, 161, 51, 109, 72, 34, 159, 139] } }],
-      propName: 'tokensEUR'
-    }],
-    ['derive.staking.account', {
-      paramName: 'address',
-      propName: 'stakingInfo',
-      skipIf: skipStakingIf
-    }],
-    ['derive.democracy.locks', {
-      paramName: 'address',
-      propName: 'democracyLocks',
-      skipIf: skipStakingIf
-    }],
-    ['query.democracy.votingOf', {
-      paramName: 'address',
-      propName: 'votingOf',
-      skipIf: skipStakingIf
-    }]
-  )
+  withCalls<Props>(...basicCalls.concat(assetCalls))
 );
