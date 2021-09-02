@@ -109,9 +109,19 @@ const basicCalls = [
   }]
 ];
 
+function pad (s: string): string {
+  const r = 4 - s.length;
+
+  if (r > 0) {
+    return s + new Array(r).fill('\0').join();
+  }
+
+  return s;
+}
+
 const assetCalls = allAssets.map((asset) => {
   return ['query.tokens.accounts', {
-    paramPick: (props: any) => [(props as {address: string}).address, { AlphaNum4: { code: asset.AlphaNum4.code, issuer: asset.AlphaNum4.issuer } }],
+    paramPick: (props: any) => [(props as {address: string}).address, { AlphaNum4: { code: pad(asset.AlphaNum4.code), issuer: asset.AlphaNum4.issuer } }],
     propName: 'tokens' + asset.AlphaNum4.code
   }];
 });
