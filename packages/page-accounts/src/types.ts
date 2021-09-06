@@ -44,6 +44,7 @@ export interface CreateProps extends ModalProps {
 }
 
 export type SeedType = 'bip' | 'raw' | 'dev';
+export type ExtendedSeedType = SeedType | 'stellar';
 
 export interface AddressState {
   address: string | null;
@@ -52,7 +53,7 @@ export interface AddressState {
   isSeedValid: boolean;
   pairType: PairType;
   seed: string;
-  seedType: SeedType;
+  seedType: ExtendedSeedType;
 }
 
 export interface CreateOptions {

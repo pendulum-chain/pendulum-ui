@@ -3,10 +3,11 @@
 
 import type { ActionStatus } from '@polkadot/react-components/Status/types';
 import type { CreateResult } from '@polkadot/ui-keyring/types';
-import type { AddressState, CreateOptions, CreateProps, DeriveValidationOutput, PairType, SeedType } from '../types';
+import type { AddressState, CreateOptions, CreateProps, DeriveValidationOutput, ExtendedSeedType, PairType } from '../types';
 
 import FileSaver from 'file-saver';
 import React, { useCallback, useRef, useState } from 'react';
+import { Keypair, StrKey } from 'stellar-base';
 import styled from 'styled-components';
 
 import { DEV_PHRASE } from '@polkadot/keyring/defaults';
@@ -15,8 +16,8 @@ import { AddressRow, Button, Checkbox, CopyButton, Dropdown, Expander, Input, In
 import { useApi, useLedger, useStepper } from '@polkadot/react-hooks';
 import { keyring } from '@polkadot/ui-keyring';
 import { settings } from '@polkadot/ui-settings';
-import { isHex, u8aToHex } from '@polkadot/util';
-import { hdLedger, hdValidatePath, keyExtractSuri, mnemonicGenerate, mnemonicValidate, randomAsU8a } from '@polkadot/util-crypto';
+import { hexToU8a, isHex, u8aToHex } from '@polkadot/util';
+import { decodeAddress, hdLedger, hdValidatePath, keyExtractSuri, mnemonicGenerate, mnemonicValidate, randomAsU8a } from '@polkadot/util-crypto';
 
 import { useTranslation } from '../translate';
 import CreateConfirmation from './CreateConfirmation';
@@ -25,7 +26,7 @@ import CreateSuriLedger from './CreateSuriLedger';
 import ExternalWarning from './ExternalWarning';
 import PasswordInput from './PasswordInput';
 
-const DEFAULT_PAIR_TYPE = 'sr25519';
+const DEFAULT_PAIR_TYPE: PairType = 'ed25519';
 const STEPS_COUNT = 3;
 
 function getSuri (seed: string, derivePath: string, pairType: PairType): string {
@@ -36,7 +37,7 @@ function getSuri (seed: string, derivePath: string, pairType: PairType): string 
       : `${seed}${derivePath}`;
 }
 
-function deriveValidate (seed: string, seedType: SeedType, derivePath: string, pairType: PairType): DeriveValidationOutput {
+function deriveValidate (seed: string, seedType: ExtendedSeedType, derivePath: string, pairType: PairType): DeriveValidationOutput {
   try {
     const { password, path } = keyExtractSuri(pairType === 'ethereum' ? `${seed}/${derivePath}` : `${seed}${derivePath}`);
     let result: DeriveValidationOutput = {};
@@ -80,18 +81,20 @@ function addressFromSeed (seed: string, derivePath: string, pairType: PairType):
     .address;
 }
 
-function newSeed (seed: string | undefined | null, seedType: SeedType): string {
+function newSeed (seed: string | undefined | null, seedType: ExtendedSeedType): string {
   switch (seedType) {
     case 'bip':
       return mnemonicGenerate();
     case 'dev':
       return DEV_PHRASE;
+    case 'stellar':
+      return u8aToHex(Keypair.random().rawSecretKey());
     default:
       return seed || u8aToHex(randomAsU8a());
   }
 }
 
-function generateSeed (_seed: string | undefined | null, derivePath: string, seedType: SeedType, pairType: PairType = DEFAULT_PAIR_TYPE): AddressState {
+function generateSeed (_seed: string | undefined | null, derivePath: string, seedType: ExtendedSeedType, pairType: PairType = DEFAULT_PAIR_TYPE): AddressState {
   const seed = newSeed(_seed, seedType);
   const address = addressFromSeed(seed, derivePath, pairType);
 
@@ -106,10 +109,10 @@ function generateSeed (_seed: string | undefined | null, derivePath: string, see
   };
 }
 
-function updateAddress (seed: string, derivePath: string, seedType: SeedType, pairType: PairType): AddressState {
+function updateAddress (seed: string, derivePath: string, seedType: ExtendedSeedType, pairType: PairType): AddressState {
   let address: string | null = null;
   let deriveValidation: DeriveValidationOutput = deriveValidate(seed, seedType, derivePath, pairType);
-  let isSeedValid = seedType === 'raw'
+  let isSeedValid = seedType === 'raw' || seedType === 'stellar'
     ? rawValidate(seed)
     : mnemonicValidate(seed);
 
@@ -172,7 +175,7 @@ function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, typ
   const [{ address, derivePath, deriveValidation, isSeedValid, pairType, seed, seedType }, setAddress] = useState<AddressState>(() => generateSeed(
     propsSeed,
     isEthereum ? ETH_DEFAULT_PATH : '',
-    propsSeed ? 'raw' : 'bip', isEthereum ? 'ethereum' : propsType
+    propsSeed ? 'raw' : 'stellar', isEthereum ? 'ethereum' : propsType
   ));
   const [isMnemonicSaved, setIsMnemonicSaved] = useState<boolean>(false);
   const [step, nextStep, prevStep] = useStepper();
@@ -199,6 +202,8 @@ function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, typ
     isEthereum
       ? { text: t<string>('Private Key'), value: 'raw' }
       : { text: t<string>('Raw seed'), value: 'raw' }
+  ).concat(
+    { text: 'Stellar', value: 'stellar' }
   ));
 
   const _onChangePath = useCallback(
@@ -223,7 +228,7 @@ function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, typ
   );
 
   const _selectSeedType = useCallback(
-    (newSeedType: SeedType): void => {
+    (newSeedType: ExtendedSeedType): void => {
       if (newSeedType !== seedType) {
         setAddress(generateSeed(null, derivePath, newSeedType, pairType));
       }
@@ -264,6 +269,12 @@ function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, typ
     [api, derivePath, isDevelopment, isValid, name, onClose, onStatusChange, pairType, password, seed, t]
   );
 
+  console.log('address', address);
+  console.log('decode address', decodeAddress(address));
+
+  const extendedAddress = seedType === 'stellar' ? StrKey.encodeEd25519PublicKey(decodeAddress(address) as Buffer) : address;
+  const extendedSeed = seedType === 'stellar' ? Keypair.fromRawEd25519Seed(hexToU8a(seed) as Buffer).secret() : seed;
+
   return (
     <Modal
       className={className}
@@ -277,7 +288,7 @@ function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, typ
             fullLength
             isEditableName={false}
             noDefaultNameOpacity
-            value={isSeedValid ? address : ''}
+            value={isSeedValid ? extendedAddress : ''}
           />
         </Modal.Columns>
         {step === 1 && <>
@@ -296,10 +307,12 @@ function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, typ
                     ? t<string>('development seed')
                     : isEthereum
                       ? t<string>('ethereum private key')
-                      : t<string>('seed (hex or string)')
+                      : seedType === 'stellar'
+                        ? t<string>('Stellar secret key (starts with S...)')
+                        : t<string>('seed (hex or string)')
               }
               onChange={_onChangeSeed}
-              seed={seed}
+              seed={extendedSeed}
               withLabel
             >
               <CopyButton

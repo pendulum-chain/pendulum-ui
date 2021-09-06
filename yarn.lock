@@ -2322,6 +2322,7 @@ __metadata:
     "@polkadot/vanitygen": ^0.42.1
     detect-browser: ^5.2.0
     file-saver: ^2.0.5
+    stellar-base: ^6.0.1
   languageName: unknown
   linkType: soft
 
@@ -2906,6 +2907,7 @@ __metadata:
   resolution: "@polkadot/react-hooks@workspace:packages/react-hooks"
   dependencies:
     "@babel/runtime": ^7.14.6
+    stellar-base: ^6.0.1
   languageName: unknown
   linkType: soft
 
@@ -5688,6 +5690,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base32.js@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "base32.js@npm:0.1.0"
+  checksum: e1ac2c4c405794bfb30e47c708718544091055371c61040c3d85aba56dd699646f1ae840fb686df9f6da8d9fdee9bbe0a07d04be79d2c13e9bb39595aedecb78
+  languageName: node
+  linkType: hard
+
 "base62@npm:^1.1.0":
   version: 1.2.8
   resolution: "base62@npm:1.2.8"
@@ -5744,6 +5753,13 @@ __metadata:
   version: 5.2.2
   resolution: "big.js@npm:5.2.2"
   checksum: b89b6e8419b097a8fb4ed2399a1931a68c612bce3cfd5ca8c214b2d017531191070f990598de2fc6f3f993d91c0f08aa82697717f6b3b8732c9731866d233c9e
+  languageName: node
+  linkType: hard
+
+"bignumber.js@npm:^4.0.0":
+  version: 4.1.0
+  resolution: "bignumber.js@npm:4.1.0"
+  checksum: d6356def9af39048e4ce87ee6518e85a69e297c9a055df1e44633d8e3a6c2b4cf2d333462e1ab8a7c487c851adc45fb44bb5748d545d2416ac0f751bccd811c8
   languageName: node
   linkType: hard
 
@@ -7253,7 +7269,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crc@npm:^3.8.0":
+"crc@npm:^3.5.0, crc@npm:^3.8.0":
   version: 3.8.0
   resolution: "crc@npm:3.8.0"
   dependencies:
@@ -12603,6 +12619,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"js-xdr@npm:^1.1.3":
+  version: 1.3.0
+  resolution: "js-xdr@npm:1.3.0"
+  dependencies:
+    lodash: ^4.17.5
+    long: ^2.2.3
+  checksum: c9d2e340840b510b7de3d8d07da610a9feb65ece25195847737ddcd88f929490ee868354957e8d615be983ff524a2863fa9b3341d2f3b3fc950a6660e7dad6a0
+  languageName: node
+  linkType: hard
+
 "js-yaml@npm:^3.13.1, js-yaml@npm:^3.14.0":
   version: 3.14.1
   resolution: "js-yaml@npm:3.14.1"
@@ -13299,7 +13325,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:^4.0.0, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.7.0":
+"lodash@npm:^4.0.0, lodash@npm:^4.17.10, lodash@npm:^4.17.11, lodash@npm:^4.17.14, lodash@npm:^4.17.15, lodash@npm:^4.17.19, lodash@npm:^4.17.20, lodash@npm:^4.17.21, lodash@npm:^4.17.5, lodash@npm:^4.7.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: eb835a2e51d381e561e508ce932ea50a8e5a68f4ebdd771ea240d3048244a8d13658acbd502cd4829768c56f2e16bdd4340b9ea141297d472517b83868e677f7
@@ -13343,6 +13369,13 @@ __metadata:
   version: 1.7.1
   resolution: "loglevel@npm:1.7.1"
   checksum: 715a4ae69ad75d4d3bd04e4f6e9edbc4cae4db34d1e7f54f426d8cebe2dd9fef891ca3789e839d927cdbc5fad73d789e998db0af2f11f4c40219c272bc923823
+  languageName: node
+  linkType: hard
+
+"long@npm:^2.2.3":
+  version: 2.4.0
+  resolution: "long@npm:2.4.0"
+  checksum: e24fd5e14be90ba6ec3faa43b3b0f1c4ac88bfdc52471d90f63e173572f6db27c45873e847f8af58283ca3140eb42d7ba11708102f3cc0956793b03305c737e0
   languageName: node
   linkType: hard
 
@@ -14294,7 +14327,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-gyp-build@npm:^4.2.0":
+"node-gyp-build@npm:^4.1.0, node-gyp-build@npm:^4.2.0":
   version: 4.2.3
   resolution: "node-gyp-build@npm:4.2.3"
   bin:
@@ -15342,6 +15375,7 @@ __metadata:
     react-dom: ^17.0.2
     react-is: ^17.0.2
     source-map-explorer: ^2.5.2
+    stellar-base: ^6.0.1
     styled-components: ^5.3.0
     stylelint: ^13.13.1
     stylelint-config-recommended: ^5.0.0
@@ -17360,7 +17394,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"sha.js@npm:^2.4.0, sha.js@npm:^2.4.8":
+"sha.js@npm:^2.3.6, sha.js@npm:^2.4.0, sha.js@npm:^2.4.8":
   version: 2.4.11
   resolution: "sha.js@npm:2.4.11"
   dependencies:
@@ -17577,6 +17611,18 @@ resolve@^2.0.0-next.3:
     uuid: ^3.4.0
     websocket-driver: ^0.7.4
   checksum: 9614e5dded95d38c08c42bba3505638801d0e88d9fec03dc1ae37296286ad5c31dff503b8c81a11e573bd0bea76b295db93d4f00cc336e749bc89f9f7cc7e6c9
+  languageName: node
+  linkType: hard
+
+"sodium-native@npm:^2.3.0":
+  version: 2.4.9
+  resolution: "sodium-native@npm:2.4.9"
+  dependencies:
+    ini: ^1.3.5
+    nan: ^2.14.0
+    node-gyp: latest
+    node-gyp-build: ^4.1.0
+  checksum: 95d17f6fee5186be66dfb606ba4b6cdfeab6ac1862fb59574ac810a5ca6a361e786afec74b5e71b4af8523d17da74108678dcf201cc809a17e60c078b020d8d9
   languageName: node
   linkType: hard
 
@@ -17912,6 +17958,25 @@ resolve@^2.0.0-next.3:
   version: 1.5.0
   resolution: "statuses@npm:1.5.0"
   checksum: c469b9519de16a4bb19600205cffb39ee471a5f17b82589757ca7bd40a8d92ebb6ed9f98b5a540c5d302ccbc78f15dc03cc0280dd6e00df1335568a5d5758a5c
+  languageName: node
+  linkType: hard
+
+"stellar-base@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "stellar-base@npm:6.0.1"
+  dependencies:
+    base32.js: ^0.1.0
+    bignumber.js: ^4.0.0
+    crc: ^3.5.0
+    js-xdr: ^1.1.3
+    lodash: ^4.17.21
+    sha.js: ^2.3.6
+    sodium-native: ^2.3.0
+    tweetnacl: ^1.0.0
+  dependenciesMeta:
+    sodium-native:
+      optional: true
+  checksum: 82db576dc77631fbb7e6bf7970536f3489750d724f01dec0be69ea397b3c59128c345b95ba92975ac930a0dbf3d339307123ca7a19d42ddf9fab77ff778ebb8f
   languageName: node
   linkType: hard
 
@@ -18946,7 +19011,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"tweetnacl@npm:^1.0.3":
+"tweetnacl@npm:^1.0.0, tweetnacl@npm:^1.0.3":
   version: 1.0.3
   resolution: "tweetnacl@npm:1.0.3"
   checksum: e4a57cac188f0c53f24c7a33279e223618a2bfb5fea426231991652a13247bea06b081fd745d71291fcae0f4428d29beba1b984b1f1ce6f66b06a6d1ab90645c
