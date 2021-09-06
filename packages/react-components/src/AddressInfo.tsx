@@ -10,12 +10,14 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 import { withCalls, withMulti } from '@polkadot/react-api/hoc';
+import { withCallsArray } from '@polkadot/react-api/hoc/calls';
 import { Expander, Icon, Tooltip } from '@polkadot/react-components';
 import { useBestNumber } from '@polkadot/react-hooks';
 import { BlockToTime, FormatBalance } from '@polkadot/react-query';
 import { AccountData } from '@polkadot/types/interfaces';
 import { BN_ZERO, formatBalance, formatNumber, hexToString, isObject } from '@polkadot/util';
 
+import allAssets from '../../../stellar_assets.json';
 import CryptoType from './CryptoType';
 import DemocracyLocks from './DemocracyLocks';
 import Label from './Label';
@@ -83,6 +85,46 @@ const DEFAULT_PREFS = {
   unstakeThreshold: true,
   validatorPayment: true
 };
+
+const basicCalls = [
+  ['derive.balances.all', {
+    paramName: 'address',
+    propName: 'balancesAll',
+    skipIf: skipBalancesIf
+  }],
+  ['derive.staking.account', {
+    paramName: 'address',
+    propName: 'stakingInfo',
+    skipIf: skipStakingIf
+  }],
+  ['derive.democracy.locks', {
+    paramName: 'address',
+    propName: 'democracyLocks',
+    skipIf: skipStakingIf
+  }],
+  ['query.democracy.votingOf', {
+    paramName: 'address',
+    propName: 'votingOf',
+    skipIf: skipStakingIf
+  }]
+];
+
+function pad (s: string): string {
+  const r = 4 - s.length;
+
+  if (r > 0) {
+    return s + new Array(r).fill('\0').join();
+  }
+
+  return s;
+}
+
+const assetCalls = allAssets.map((asset) => {
+  return ['query.tokens.accounts', {
+    paramPick: (props: any) => [(props as {address: string}).address, { AlphaNum4: { code: pad(asset.AlphaNum4.code), issuer: asset.AlphaNum4.issuer } }],
+    propName: 'tokens' + asset.AlphaNum4.code
+  }];
+});
 
 function lookupLock (lookup: Record<string, string>, lockId: LockIdentifier): string {
   const lockHex = lockId.toHex();
@@ -561,34 +603,5 @@ export default withMulti(
       }
     }
   `,
-  withCalls<Props>(
-    ['derive.balances.all', {
-      paramName: 'address',
-      propName: 'balancesAll',
-      skipIf: skipBalancesIf
-    }],
-    ['query.tokens.accounts', {
-      paramPick: (props) => [(props as {address: string}).address, { TokenSymbol: { code: 'USDC' } }],
-      propName: 'tokensUSDC'
-    }],
-    ['query.tokens.accounts', {
-      paramPick: (props) => [(props as {address: string}).address, { TokenSymbol: { code: 'EUR\0' } }],
-      propName: 'tokensEUR'
-    }],
-    ['derive.staking.account', {
-      paramName: 'address',
-      propName: 'stakingInfo',
-      skipIf: skipStakingIf
-    }],
-    ['derive.democracy.locks', {
-      paramName: 'address',
-      propName: 'democracyLocks',
-      skipIf: skipStakingIf
-    }],
-    ['query.democracy.votingOf', {
-      paramName: 'address',
-      propName: 'votingOf',
-      skipIf: skipStakingIf
-    }]
-  )
+  withCalls<Props>(...basicCalls.concat(assetCalls))
 );
