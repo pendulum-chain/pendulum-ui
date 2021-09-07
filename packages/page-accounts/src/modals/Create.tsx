@@ -269,11 +269,15 @@ function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, typ
     [api, derivePath, isDevelopment, isValid, name, onClose, onStatusChange, pairType, password, seed, t]
   );
 
-  console.log('address', address);
-  console.log('decode address', decodeAddress(address));
+  let extendedAddress = address;
+  let extendedSeed = seed;
 
-  const extendedAddress = seedType === 'stellar' ? StrKey.encodeEd25519PublicKey(decodeAddress(address) as Buffer) : address;
-  const extendedSeed = seedType === 'stellar' ? Keypair.fromRawEd25519Seed(hexToU8a(seed) as Buffer).secret() : seed;
+  if (seedType === 'stellar' && address) {
+    console.log('address', address);
+    console.log('decode address', decodeAddress(address));
+    extendedAddress = StrKey.encodeEd25519PublicKey(decodeAddress(address) as Buffer);
+    extendedSeed = Keypair.fromRawEd25519Seed(hexToU8a(seed) as Buffer).secret();
+  }
 
   return (
     <Modal
