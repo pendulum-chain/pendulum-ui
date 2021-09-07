@@ -71,6 +71,10 @@ function isHexSeed (seed: string): boolean {
   return isHex(seed) && seed.length === 66;
 }
 
+function stellarValidate (seed: string): boolean {
+  return seed.toUpperCase().startsWith('S') && seed.length === 56;
+}
+
 function rawValidate (seed: string): boolean {
   return ((seed.length > 0) && (seed.length <= 32)) || isHexSeed(seed);
 }
@@ -109,12 +113,17 @@ function generateSeed (_seed: string | undefined | null, derivePath: string, see
   };
 }
 
+const validators = {
+  bip: (seed: string) => mnemonicValidate(seed),
+  dev: (seed: string) => mnemonicValidate(seed),
+  raw: (seed: string) => rawValidate(seed),
+  stellar: (seed: string) => stellarValidate(seed)
+};
+
 function updateAddress (seed: string, derivePath: string, seedType: ExtendedSeedType, pairType: PairType): AddressState {
   let address: string | null = null;
   let deriveValidation: DeriveValidationOutput = deriveValidate(seed, seedType, derivePath, pairType);
-  let isSeedValid = seedType === 'raw' || seedType === 'stellar'
-    ? rawValidate(seed)
-    : mnemonicValidate(seed);
+  let isSeedValid = validators[seedType](seed);
 
   if (!deriveValidation?.error && isSeedValid) {
     try {
