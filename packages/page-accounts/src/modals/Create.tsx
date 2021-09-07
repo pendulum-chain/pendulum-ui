@@ -127,6 +127,10 @@ function updateAddress (seed: string, derivePath: string, seedType: ExtendedSeed
 
   if (!deriveValidation?.error && isSeedValid) {
     try {
+      if (seedType === 'stellar') {
+        const rawStellarKey = Keypair.fromSecret(seed).rawSecretKey();
+        seed = u8aToHex(rawStellarKey);
+      }
       address = addressFromSeed(seed, derivePath, pairType);
     } catch (error) {
       console.error(error);
