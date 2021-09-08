@@ -214,9 +214,17 @@ function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, typ
   );
 
   const _onChangeSeed = useCallback(
-    (newSeed: string) => setAddress(
-      updateAddress(newSeed, derivePath, seedType, pairType)
-    ),
+    (newSeed: string) => {
+      if (seedType === 'stellar') {
+        if (StrKey.isValidEd25519SecretSeed(newSeed)) {
+          newSeed = u8aToHex(Keypair.fromSecret(newSeed).rawSecretKey());
+        }
+      }
+
+      setAddress(
+        updateAddress(newSeed, derivePath, seedType, pairType)
+      );
+    },
     [derivePath, pairType, seedType]
   );
 
@@ -273,8 +281,6 @@ function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, typ
   let extendedSeed = seed;
 
   if (seedType === 'stellar' && address) {
-    console.log('address', address);
-    console.log('decode address', decodeAddress(address));
     extendedAddress = StrKey.encodeEd25519PublicKey(decodeAddress(address) as Buffer);
     extendedSeed = Keypair.fromRawEd25519Seed(hexToU8a(seed) as Buffer).secret();
   }
@@ -404,7 +410,9 @@ function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, typ
             <ExternalWarning />
             <div className='saveToggle'>
               <Checkbox
-                label={<>{t<string>('I have saved my mnemonic seed safely')}</>}
+                label={<>{seedType === 'stellar'
+                  ? t<string>('I have saved my Stellar secret key safely')
+                  : t<string>('I have saved my mnemonic seed safely')}</>}
                 onChange={_toggleMnemonicSaved}
                 value={isMnemonicSaved}
               />
