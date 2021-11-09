@@ -445,7 +445,7 @@ export function createTesting (t: TFunction, firstOnly?: boolean): LinkOption[] 
       info: 'pendulum',
       text: t('rpc.test.pendulum', 'Pendulum', { ns: 'apps-config' }),
       providers: {
-        Pendulum: 'wss://latest---pendulum-demo-node-5agyjkoilq-uc.a.run.app:443'
+        Pendulum: 'wss://testnet-1.pendulum.satoshipay.tech:443'
       }
     },
     {
