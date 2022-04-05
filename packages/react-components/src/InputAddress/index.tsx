@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/react-components authors & contributors
+// Copyright 2017-2022 @polkadot/react-components authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { KeyringOption$Type, KeyringOptions, KeyringSectionOption, KeyringSectionOptions } from '@polkadot/ui-keyring/options/types';
@@ -15,15 +15,14 @@ import { isNull, isUndefined } from '@polkadot/util';
 
 import Dropdown from '../Dropdown';
 import Static from '../Static';
-import { getAddressName } from '../util';
-import addressToAddress from '../util/toAddress';
+import { getAddressName, toAddress } from '../util';
 import createHeader from './createHeader';
 import createItem from './createItem';
 
 interface Props {
   className?: string;
   defaultValue?: Uint8Array | string | null;
-  filter?: string[];
+  filter?: string[] | null;
   help?: React.ReactNode;
   hideAddress?: boolean;
   isDisabled?: boolean;
@@ -59,7 +58,7 @@ const MULTI_DEFAULT: string[] = [];
 
 function transformToAddress (value?: string | Uint8Array | null): string | null {
   try {
-    return addressToAddress(value) || null;
+    return toAddress(value) || null;
   } catch (error) {
     // noop, handled by return
   }
@@ -117,6 +116,21 @@ function setLastValue (type: KeyringOption$Type = DEFAULT_TYPE, value: string): 
   store.set(STORAGE_KEY, options);
 }
 
+function dedupe (options: Option[]): Option[] {
+  return options.reduce<Option[]>((all, o, index) => {
+    const hasDupe = all.some(({ key }, eindex) =>
+      eindex !== index &&
+      key === o.key
+    );
+
+    if (!hasDupe) {
+      all.push(o);
+    }
+
+    return all;
+  }, []);
+}
+
 class InputAddress extends React.PureComponent<Props, State> {
   public override state: State = {};
 
@@ -125,8 +139,8 @@ class InputAddress extends React.PureComponent<Props, State> {
       return {
         lastValue: lastValue || getLastValue(type),
         value: Array.isArray(value)
-          ? value.map((v) => addressToAddress(v))
-          : (addressToAddress(value) || undefined)
+          ? value.map((v) => toAddress(v))
+          : (toAddress(value) || undefined)
       };
     } catch (error) {
       return null;
@@ -162,7 +176,7 @@ class InputAddress extends React.PureComponent<Props, State> {
           : (lastOption && lastOption.value)
     );
     const actualOptions: Option[] = options
-      ? options.map((o): Option => createItem(o))
+      ? dedupe(options.map((o) => createItem(o)))
       : isDisabled && actualValue
         ? [createOption(actualValue)]
         : this.getFiltered();
@@ -210,7 +224,7 @@ class InputAddress extends React.PureComponent<Props, State> {
     }
 
     return getAddressName(value);
-  }
+  };
 
   private getLastOptionValue (): KeyringSectionOption | undefined {
     const available = this.getFiltered();
@@ -221,7 +235,9 @@ class InputAddress extends React.PureComponent<Props, State> {
   }
 
   private hasValue (test?: Uint8Array | string | null): boolean {
-    return this.getFiltered().some(({ value }) => test === value);
+    const address = test && test.toString();
+
+    return this.getFiltered().some(({ value }) => value === address);
   }
 
   private getFiltered (): Option[] {
@@ -229,7 +245,7 @@ class InputAddress extends React.PureComponent<Props, State> {
 
     return !optionsAll
       ? []
-      : optionsAll[type].filter(({ value }) => !filter || (!!value && filter.includes(value)));
+      : dedupe(optionsAll[type]).filter(({ value }) => !filter || (!!value && filter.includes(value)));
   }
 
   private onChange = (address: string): void => {
@@ -242,7 +258,7 @@ class InputAddress extends React.PureComponent<Props, State> {
         ? transformToAccountId(address)
         : null
     );
-  }
+  };
 
   private onChangeMulti = (addresses: string[]): void => {
     const { onChangeMulti } = this.props;
@@ -254,7 +270,7 @@ class InputAddress extends React.PureComponent<Props, State> {
           .filter((address) => address as string) as string[]
       );
     }
-  }
+  };
 
   private onSearch = (filteredOptions: KeyringSectionOptions, _query: string): KeyringSectionOptions => {
     const { isInput = true } = this.props;
@@ -286,7 +302,7 @@ class InputAddress extends React.PureComponent<Props, State> {
 
       return !(isNull(item.value) || isUndefined(item.value)) || (!isLast && !!hasNext);
     });
-  }
+  };
 }
 
 const ExportedComponent = withMulti(

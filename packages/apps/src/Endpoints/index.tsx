@@ -1,12 +1,11 @@
-// Copyright 2017-2021 @polkadot/apps authors & contributors
+// Copyright 2017-2022 @polkadot/apps authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { LinkOption } from '@polkadot/apps-config/endpoints/types';
 import type { Group } from './types';
 
 // ok, this seems to be an eslint bug, this _is_ a package import
-/* eslint-disable-next-line node/no-deprecated-api */
-import punycode from 'punycode';
+import punycode from 'punycode/';
 import React, { useCallback, useMemo, useState } from 'react';
 import store from 'store';
 import styled from 'styled-components';
@@ -104,7 +103,7 @@ function extractUrlState (apiUrl: string, groups: Group[]): UrlState {
 
 function loadAffinities (groups: Group[]): Record<string, string> {
   return Object
-    .entries<string>(store.get(STORAGE_AFFINITIES) || {})
+    .entries<string>(store.get(STORAGE_AFFINITIES) as Record<string, string> || {})
     .filter(([network, apiUrl]) =>
       groups.some(({ networks }) =>
         networks.some(({ name, providers }) =>
@@ -175,30 +174,25 @@ function Endpoints ({ className = '', offset, onClose }: Props): React.ReactElem
     []
   );
 
-  const _saveApiEndpoint = () => {
-    try {
-      localStorage.setItem(CUSTOM_ENDPOINT_KEY, JSON.stringify([...storedCustomEndpoints, apiUrl]));
-      _onApply();
-    } catch (e) {
-      console.error(e);
-      // ignore error
-    }
-  };
+  const _removeApiEndpoint = useCallback(
+    (): void => {
+      if (!isSavedCustomEndpoint) {
+        return;
+      }
 
-  const _removeApiEndpoint = () => {
-    if (!isSavedCustomEndpoint) return;
+      const newStoredCurstomEndpoints = storedCustomEndpoints.filter((url) => url !== apiUrl);
 
-    const newStoredCurstomEndpoints = storedCustomEndpoints.filter((url) => url !== apiUrl);
-
-    try {
-      localStorage.setItem(CUSTOM_ENDPOINT_KEY, JSON.stringify(newStoredCurstomEndpoints));
-      setGroups(combineEndpoints(createWsEndpoints(t)));
-      setStoredCustomEndpoints(getCustomEndpoints());
-    } catch (e) {
-      console.error(e);
-      // ignore error
-    }
-  };
+      try {
+        localStorage.setItem(CUSTOM_ENDPOINT_KEY, JSON.stringify(newStoredCurstomEndpoints));
+        setGroups(combineEndpoints(createWsEndpoints(t)));
+        setStoredCustomEndpoints(getCustomEndpoints());
+      } catch (e) {
+        console.error(e);
+        // ignore error
+      }
+    },
+    [apiUrl, isSavedCustomEndpoint, storedCustomEndpoints, t]
+  );
 
   const _setApiUrl = useCallback(
     (network: string, apiUrl: string): void => {
@@ -233,6 +227,19 @@ function Endpoints ({ className = '', offset, onClose }: Props): React.ReactElem
       onClose();
     },
     [apiUrl, onClose]
+  );
+
+  const _saveApiEndpoint = useCallback(
+    (): void => {
+      try {
+        localStorage.setItem(CUSTOM_ENDPOINT_KEY, JSON.stringify([...storedCustomEndpoints, apiUrl]));
+        _onApply();
+      } catch (e) {
+        console.error(e);
+        // ignore error
+      }
+    },
+    [_onApply, apiUrl, storedCustomEndpoints]
   );
 
   const canSwitch = useMemo(
@@ -277,17 +284,21 @@ function Endpoints ({ className = '', offset, onClose }: Props): React.ReactElem
                 value={apiUrl}
               />
               {isSavedCustomEndpoint
-                ? <Button
-                  className='customButton'
-                  icon='trash-alt'
-                  onClick={_removeApiEndpoint}
-                />
-                : <Button
-                  className='customButton'
-                  icon='save'
-                  isDisabled={!isUrlValid || isKnownUrl}
-                  onClick={_saveApiEndpoint}
-                />
+                ? (
+                  <Button
+                    className='customButton'
+                    icon='trash-alt'
+                    onClick={_removeApiEndpoint}
+                  />
+                )
+                : (
+                  <Button
+                    className='customButton'
+                    icon='save'
+                    isDisabled={!isUrlValid || isKnownUrl}
+                    onClick={_saveApiEndpoint}
+                  />
+                )
               }
             </div>
           )}

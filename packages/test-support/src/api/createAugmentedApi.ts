@@ -1,9 +1,9 @@
-// Copyright 2017-2021 @polkadot/test-support authors & contributors
+// Copyright 2017-2022 @polkadot/test-support authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import { ApiPromise, WsProvider } from '@polkadot/api';
 import { Metadata, TypeRegistry } from '@polkadot/types';
-import metaStatic from '@polkadot/types/metadata/static';
+import metaStatic from '@polkadot/types-support/metadata/static-substrate';
 
 export function createAugmentedApi (): ApiPromise {
   const registry = new TypeRegistry();

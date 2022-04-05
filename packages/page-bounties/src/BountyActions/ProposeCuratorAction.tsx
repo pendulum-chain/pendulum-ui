@@ -1,16 +1,15 @@
-// Copyright 2017-2021 @polkadot/app-treasury authors & contributors
+// Copyright 2017-2022 @polkadot/app-treasury authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { DeriveCollectiveProposal } from '@polkadot/api-derive/types';
 import type { Balance, BountyIndex } from '@polkadot/types/interfaces';
 
-import BN from 'bn.js';
 import React, { useEffect, useMemo, useState } from 'react';
 
 import { getTreasuryProposalThreshold } from '@polkadot/apps-config';
 import { Button, InputAddress, InputBalance, MarkError, Modal, TxButton } from '@polkadot/react-components';
 import { useApi, useCollectiveInstance, useCollectiveMembers, useToggle } from '@polkadot/react-hooks';
-import { BN_ZERO } from '@polkadot/util';
+import { BN, BN_ZERO } from '@polkadot/util';
 
 import { truncateTitle } from '../helpers';
 import { useBounties } from '../hooks';
@@ -63,9 +62,10 @@ function ProposeCuratorAction ({ description, index, proposals, value }: Props):
         />
         {isOpen && (
           <Modal
-            data-testid={'propose-curator-modal'}
             header={`${t<string>('Propose curator')} - "${truncateTitle(description, 30)}"`}
+            onClose={toggleOpen}
             size='large'
+            testId='propose-curator-modal'
           >
             <Modal.Content>
               <Modal.Columns hint={t<string>('The council member that will create the motion.')}>
@@ -100,7 +100,7 @@ function ProposeCuratorAction ({ description, index, proposals, value }: Props):
                 )}
               </Modal.Columns>
             </Modal.Content>
-            <Modal.Actions onCancel={toggleOpen}>
+            <Modal.Actions>
               <TxButton
                 accountId={accountId}
                 icon='check'

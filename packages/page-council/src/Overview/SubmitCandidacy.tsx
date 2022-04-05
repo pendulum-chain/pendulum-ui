@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/app-council authors & contributors
+// Copyright 2017-2022 @polkadot/app-council authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { ComponentProps as Props } from './types';
@@ -50,7 +50,7 @@ function SubmitCandidacy ({ electionsInfo }: Props): React.ReactElement<Props> |
               </Modal.Columns>
             )}
           </Modal.Content>
-          <Modal.Actions onCancel={onClose}>
+          <Modal.Actions>
             <TxButton
               accountId={accountId}
               isDisabled={!electionsInfo}

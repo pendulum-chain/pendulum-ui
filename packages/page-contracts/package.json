@@ -1,11 +1,19 @@
 {
+  "bugs": "https://github.com/polkadot-js/apps/issues",
+  "homepage": "https://github.com/polkadot-js/apps/tree/master/packages/page-contracts#readme",
+  "license": "Apache-2.0",
   "name": "@polkadot/app-contracts",
   "private": true,
+  "repository": {
+    "directory": "packages/page-contracts",
+    "type": "git",
+    "url": "https://github.com/polkadot-js/apps.git"
+  },
+  "sideEffects": false,
   "type": "module",
-  "version": "0.94.2-79",
-  "license": "Apache-2.0",
+  "version": "0.111.1",
   "dependencies": {
-    "@babel/runtime": "^7.14.6",
-    "@polkadot/api-contract": "^5.1.1"
+    "@babel/runtime": "^7.17.8",
+    "@polkadot/api-contract": "^7.15.1"
   }
 }

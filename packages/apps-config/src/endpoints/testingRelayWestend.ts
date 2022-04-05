@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/apps-config authors & contributors
+// Copyright 2017-2022 @polkadot/apps-config authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { TFunction } from 'i18next';
@@ -23,11 +23,11 @@ export function createWestend (t: TFunction): EndpointOption {
     text: t('rpc.westend', 'Westend', { ns: 'apps-config' }),
     providers: {
       Parity: 'wss://westend-rpc.polkadot.io',
-      'Patract Elara': 'wss://westend.elara.patract.io',
       OnFinality: 'wss://westend.api.onfinality.io/public-ws',
+      Pinknode: 'wss://rpc.pinknode.io/westend/explorer',
+      Dwellir: 'wss://westend-rpc.dwellir.com',
       'light client': 'light://substrate-connect/westend'
       // 'NodeFactory(Vedran)': 'wss://westend.vedran.nodefactory.io/ws', // https://github.com/polkadot-js/apps/issues/5580
-      // Pinknode: 'wss://rpc.pinknode.io/westend/explorer' // https://github.com/polkadot-js/apps/issues/5721
     },
     teleport: [1000],
     linked: [
@@ -40,7 +40,7 @@ export function createWestend (t: TFunction): EndpointOption {
         text: t('rpc.westend.shell', 'Westmint', { ns: 'apps-config' }),
         providers: {
           Parity: 'wss://westmint-rpc.polkadot.io',
-          'Patract Elara': 'wss://westmint.westend.elara.patract.io'
+          Dwellir: 'wss://westmint-rpc.dwellir.com'
         },
         teleport: [-1]
       },
@@ -49,7 +49,8 @@ export function createWestend (t: TFunction): EndpointOption {
       // NOTE: Added alphabetical based on chain name
       {
         info: 'basilisk',
-        paraId: 2083,
+        isUnreachable: true, // https://github.com/polkadot-js/apps/issues/6422
+        paraId: 2097,
         text: t('rpc.westend.basilisk', 'Basilisk Egg', { ns: 'apps-config' }),
         providers: {
           HydraDX: 'wss://rpc-01.basilisk-testnet.hydradx.io'
@@ -57,7 +58,7 @@ export function createWestend (t: TFunction): EndpointOption {
       },
       {
         info: 'charcoal',
-        paraId: 2010,
+        paraId: 2086,
         text: t('rpc.westend.charcoal', 'Charcoal', { ns: 'apps-config' }),
         providers: {
           Centrifuge: 'wss://fullnode-collator.charcoal.centrifuge.io'
@@ -72,7 +73,17 @@ export function createWestend (t: TFunction): EndpointOption {
         }
       },
       {
+        info: 'interlay',
+        isUnreachable: true, // https://github.com/polkadot-js/apps/issues/6261
+        paraId: 2094,
+        text: t('rpc.westend.interbtc', 'Interlay', { ns: 'apps-config' }),
+        providers: {
+          Interlay: 'wss://api-westend.interlay.io/parachain'
+        }
+      },
+      {
         info: 'moonshadow',
+        isUnreachable: true, // https://github.com/polkadot-js/apps/issues/6181
         paraId: 2002,
         text: t('rpc.westend.moonshadow', 'Moonshadow', { ns: 'apps-config' }),
         providers: {
@@ -80,12 +91,30 @@ export function createWestend (t: TFunction): EndpointOption {
         }
       },
       {
-        info: 'shibuya',
-        isUnreachable: true, // https://github.com/polkadot-js/apps/issues/5489
-        paraId: 2007,
-        text: t('rpc.westend.shibuya', 'Shibuya', { ns: 'apps-config' }),
+        info: 'pangoro',
+        isUnreachable: true, // https://github.com/polkadot-js/apps/issues/6530
+        homepage: 'https://darwinia.network/',
+        paraId: 2102,
+        text: t('rpc.westend.pangoro', 'Pangoro', { ns: 'apps-config' }),
         providers: {
-          StakeTechnologies: 'wss://rpc.shibuya.plasmnet.io'
+          Darwinia: 'wss://pangoro-parachain-rpc.darwinia.network'
+        }
+      },
+      {
+        info: 'westendPichiu',
+        homepage: 'https://kylin.network/',
+        paraId: 2112,
+        text: t('westend.kylin-node.co.uk', 'Pichiu', { ns: 'apps-config' }),
+        providers: {
+          'Kylin Network': 'wss://westend.kylin-node.co.uk'
+        }
+      },
+      {
+        info: 'westendStandard',
+        paraId: 2094,
+        text: t('rpc.westend.standard', 'Standard ', { ns: 'apps-config' }),
+        providers: {
+          'Standard Protocol': 'wss://rpc.westend.standard.tech'
         }
       },
       {
@@ -99,6 +128,7 @@ export function createWestend (t: TFunction): EndpointOption {
       },
       {
         info: 'whala',
+        isUnreachable: true, // https://github.com/polkadot-js/apps/issues/6181
         paraId: 2013,
         text: t('rpc.westend.whala', 'Whala', { ns: 'apps-config' }),
         providers: {
@@ -108,7 +138,7 @@ export function createWestend (t: TFunction): EndpointOption {
       {
         info: 'kilt',
         homepage: 'https://www.kilt.io/',
-        paraId: 2009,
+        paraId: 2085,
         text: t('rpc.westend.kilt', 'WILT', { ns: 'apps-config' }),
         providers: {
           'KILT Protocol': 'wss://westend.kilt.io:9977'

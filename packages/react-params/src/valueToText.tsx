@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/react-params authors & contributors
+// Copyright 2017-2022 @polkadot/react-params authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Keys, ValidatorId } from '@polkadot/types/interfaces';
@@ -7,7 +7,7 @@ import type { Codec } from '@polkadot/types/types';
 import React from 'react';
 
 import { Option, Raw } from '@polkadot/types';
-import { isFunction, isNull, isUndefined, u8aToHex } from '@polkadot/util';
+import { isFunction, isNull, isUndefined, stringify, u8aToHex } from '@polkadot/util';
 
 interface DivProps {
   className?: string;
@@ -41,15 +41,15 @@ function toHuman (value: Codec | Codec[]): unknown {
       : value.toString();
 }
 
-function toString (value: any): string {
-  return JSON
-    .stringify(value, null, 2)
+export function toHumanJson (value: any): string {
+  return stringify(value, 2)
+    .replace(/,\n/g, '\n')
     .replace(/"/g, '')
     .replace(/\\/g, '')
     .replace(/\],\[/g, '],\n[');
 }
 
-export default function valueToText (type: string, value: Codec | undefined | null, contentShorten = true): React.ReactNode {
+export default function valueToText (type: string, value: Codec | undefined | null): React.ReactNode {
   if (isNull(value) || isUndefined(value)) {
     return div({}, '<unknown>');
   }
@@ -57,17 +57,17 @@ export default function valueToText (type: string, value: Codec | undefined | nu
   return div(
     {},
     ['Bytes', 'Raw', 'Option<Keys>', 'Keys'].includes(type) && isFunction(value.toU8a)
-      ? u8aToHex(value.toU8a(true), contentShorten ? 512 : -1)
+      ? u8aToHex(value.toU8a(true))
       // HACK Handle Keys as hex-only (this should go away once the node value is
       // consistently swapped to `Bytes`)
       : type === 'Vec<(ValidatorId,Keys)>'
-        ? toString(formatKeys(value as unknown as [ValidatorId, Keys][]))
+        ? toHumanJson(formatKeys(value as unknown as [ValidatorId, Keys][]))
         : value instanceof Raw
           ? value.isEmpty
             ? '<empty>'
             : value.toString()
           : (value instanceof Option) && value.isNone
             ? '<none>'
-            : toString(toHuman(value))
+            : toHumanJson(toHuman(value))
   );
 }

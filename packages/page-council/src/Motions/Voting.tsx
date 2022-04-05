@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/app-council authors & contributors
+// Copyright 2017-2022 @polkadot/app-council authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { AccountId, Hash, Proposal, ProposalIndex } from '@polkadot/types/interfaces';
@@ -38,6 +38,7 @@ function Voting ({ hash, idNumber, isDisabled, members, prime, proposal }: Props
       {isVotingOpen && (
         <Modal
           header={t<string>('Vote on proposal')}
+          onClose={toggleVoting}
           size='large'
         >
           <Modal.Content>
@@ -57,7 +58,7 @@ function Voting ({ hash, idNumber, isDisabled, members, prime, proposal }: Props
               )}
             </Modal.Columns>
           </Modal.Content>
-          <Modal.Actions onCancel={toggleVoting}>
+          <Modal.Actions>
             <TxButton
               accountId={accountId}
               icon='ban'

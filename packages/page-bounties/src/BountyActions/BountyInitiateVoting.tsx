@@ -1,15 +1,15 @@
-// Copyright 2017-2021 @polkadot/app-treasury authors & contributors
+// Copyright 2017-2022 @polkadot/app-treasury authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { DeriveCollectiveProposal } from '@polkadot/api-derive/types';
 import type { BountyIndex } from '@polkadot/types/interfaces';
 
-import BN from 'bn.js';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { getTreasuryProposalThreshold } from '@polkadot/apps-config';
 import { Button, InputAddress, Modal, TxButton } from '@polkadot/react-components';
 import { useApi, useCollectiveInstance, useCollectiveMembers, useToggle } from '@polkadot/react-hooks';
+import { BN } from '@polkadot/util';
 
 import { truncateTitle } from '../helpers';
 import { useBounties } from '../hooks';
@@ -56,6 +56,7 @@ function BountyInitiateVoting ({ description, index, proposals }: Props): React.
         {isOpen && (
           <Modal
             header={`${t<string>('Initiate voting')} - "${truncateTitle(description, 30)}"`}
+            onClose={toggleOpen}
             size='large'
           >
             <Modal.Content>
@@ -70,7 +71,7 @@ function BountyInitiateVoting ({ description, index, proposals }: Props): React.
                 />
               </Modal.Columns>
             </Modal.Content>
-            <Modal.Actions onCancel={toggleOpen}>
+            <Modal.Actions>
               <TxButton
                 accountId={accountId}
                 icon='check'

@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/app-council authors & contributors
+// Copyright 2017-2022 @polkadot/app-council authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { SubmittableExtrinsic } from '@polkadot/api/types';
@@ -80,6 +80,7 @@ function Slashing ({ className = '', isMember, members }: Props): React.ReactEle
         <Modal
           className={className}
           header={t<string>('Revert pending slashes')}
+          onClose={toggleVisible}
           size='large'
         >
           <Modal.Content>
@@ -114,7 +115,7 @@ function Slashing ({ className = '', isMember, members }: Props): React.ReactEle
               }
             </Modal.Columns>
           </Modal.Content>
-          <Modal.Actions onCancel={toggleVisible}>
+          <Modal.Actions>
             <TxButton
               accountId={accountId}
               icon='sync'

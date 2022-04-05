@@ -1,7 +1,7 @@
-// Copyright 2017-2021 @polkadot/app-parachains authors & contributors
+// Copyright 2017-2022 @polkadot/app-parachains authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
-import type BN from 'bn.js';
+import type { BN } from '@polkadot/util';
 import type { Campaign, LeasePeriod } from '../types';
 
 import React, { useEffect, useMemo, useState } from 'react';
@@ -20,7 +20,6 @@ interface Props {
   bestHash?: string;
   bestNumber?: BN;
   className?: string;
-  isOdd?: boolean;
   isOngoing?: boolean;
   leasePeriod?: LeasePeriod;
   value: Campaign;
@@ -31,7 +30,7 @@ interface LastChange {
   prevLength: number;
 }
 
-function Fund ({ bestHash, bestNumber, className, isOdd, isOngoing, leasePeriod, value: { info: { cap, depositor, end, firstPeriod, lastPeriod, raised, verifier }, isCapped, isEnded, isWinner, paraId } }: Props): React.ReactElement<Props> {
+function Fund ({ bestHash, bestNumber, className = '', isOngoing, leasePeriod, value: { info: { cap, depositor, end, firstPeriod, lastPeriod, raised, verifier }, isCapped, isEnded, isWinner, paraId } }: Props): React.ReactElement<Props> {
   const { t } = useTranslation();
   const { api } = useApi();
   const { isAccount } = useAccounts();
@@ -79,7 +78,7 @@ function Fund ({ bestHash, bestNumber, className, isOdd, isOngoing, leasePeriod,
   }, [contributorsHex, blockHash]);
 
   return (
-    <tr className={`${className || ''} ${isOdd ? 'isOdd' : 'isEven'}`}>
+    <tr className={className}>
       <td className='number'><h1>{formatNumber(paraId)}</h1></td>
       <td className='badge'><ParaLink id={paraId} /></td>
       <td className='media--800'>
@@ -94,7 +93,7 @@ function Fund ({ bestHash, bestNumber, className, isOdd, isOngoing, leasePeriod,
             : t<string>('Ended')
         }
       </td>
-      <td className='address media--1400'><AddressMini value={depositor} /></td>
+      <td className='address media--2000'><AddressMini value={depositor} /></td>
       <td className='all number together media--1200'>
         {blocksLeft && (
           <BlockToTime value={blocksLeft} />
@@ -111,9 +110,7 @@ function Fund ({ bestHash, bestNumber, className, isOdd, isOngoing, leasePeriod,
         <FormatBalance
           value={raised}
           withCurrency={false}
-        />&nbsp;/&nbsp;<FormatBalance
-          value={cap}
-        />
+        />&nbsp;/&nbsp;<FormatBalance value={cap} />
         <div>{percentage}</div>
         {myAccounts.length !== 0 && (
           <Expander
@@ -162,7 +159,7 @@ function Fund ({ bestHash, bestNumber, className, isOdd, isOngoing, leasePeriod,
             accountId={depositor}
             className='media--1400'
             icon='times'
-            isDisabled={!isDepositor}
+            isDisabled={!(isDepositor || hasEnded)}
             label={
               isEnded
                 ? t<string>('Close')

@@ -1,4 +1,4 @@
-// Copyright 2017-2021 @polkadot/app-staking authors & contributors
+// Copyright 2017-2022 @polkadot/app-staking authors & contributors
 // SPDX-License-Identifier: Apache-2.0
 
 import type { SortedTargets } from '../types';
@@ -70,6 +70,7 @@ function NewValidator ({ isInElection, targets }: Props): React.ReactElement<Pro
               step
             }
           })}
+          onClose={_toggle}
           size='large'
         >
           <Modal.Content>
@@ -98,7 +99,7 @@ function NewValidator ({ isInElection, targets }: Props): React.ReactElement<Pro
               <BatchWarning />
             </Modal.Columns>
           </Modal.Content>
-          <Modal.Actions onCancel={_toggle}>
+          <Modal.Actions>
             <Button
               icon='step-backward'
               isDisabled={step === 1}
