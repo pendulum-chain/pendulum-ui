@@ -1,6 +1,7 @@
+/* eslint-disable header/header */
+/* eslint-disable space-before-function-paren */
 // Copyright 2017-2022 @polkadot/app-accounts authors & contributors
 // SPDX-License-Identifier: Apache-2.0
-
 import type { ActionStatus } from '@polkadot/react-components/Status/types';
 import type { AddressState, CreateOptions, CreateProps, DeriveValidationOutput, ExtendedSeedType, PairType } from '../types';
 
@@ -27,7 +28,7 @@ import ExternalWarning from './ExternalWarning';
 const DEFAULT_PAIR_TYPE: PairType = 'ed25519';
 const STEPS_COUNT = 3;
 
-function getSuri (seed: string, derivePath: string, pairType: PairType): string {
+function getSuri(seed: string, derivePath: string, pairType: PairType): string {
   return pairType === 'ed25519-ledger'
     ? u8aToHex(hdLedger(seed, derivePath).secretKey.slice(0, 32))
     : pairType === 'ethereum'
@@ -35,7 +36,7 @@ function getSuri (seed: string, derivePath: string, pairType: PairType): string 
       : `${seed}${derivePath}`;
 }
 
-function deriveValidate (seed: string, seedType: ExtendedSeedType, derivePath: string, pairType: PairType): DeriveValidationOutput {
+function deriveValidate(seed: string, seedType: ExtendedSeedType, derivePath: string, pairType: PairType): DeriveValidationOutput {
   try {
     const { password, path } = keyExtractSuri(pairType === 'ethereum' ? `${seed}/${derivePath}` : `${seed}${derivePath}`);
     let result: DeriveValidationOutput = {};
@@ -65,21 +66,21 @@ function deriveValidate (seed: string, seedType: ExtendedSeedType, derivePath: s
   }
 }
 
-function isHexSeed (seed: string): boolean {
+function isHexSeed(seed: string): boolean {
   return isHex(seed) && seed.length === 66;
 }
 
-function rawValidate (seed: string): boolean {
+function rawValidate(seed: string): boolean {
   return ((seed.length > 0) && (seed.length <= 32)) || isHexSeed(seed);
 }
 
-function addressFromSeed (seed: string, derivePath: string, pairType: PairType): string {
+function addressFromSeed(seed: string, derivePath: string, pairType: PairType): string {
   return keyring
     .createFromUri(getSuri(seed, derivePath, pairType), {}, pairType === 'ed25519-ledger' ? 'ed25519' : pairType)
     .address;
 }
 
-function newSeed (seed: string | undefined | null, seedType: ExtendedSeedType): string {
+function newSeed(seed: string | undefined | null, seedType: ExtendedSeedType): string {
   switch (seedType) {
     case 'bip':
       return mnemonicGenerate();
@@ -92,7 +93,7 @@ function newSeed (seed: string | undefined | null, seedType: ExtendedSeedType): 
   }
 }
 
-function generateSeed (_seed: string | undefined | null, derivePath: string, seedType: ExtendedSeedType, pairType: PairType = DEFAULT_PAIR_TYPE): AddressState {
+function generateSeed(_seed: string | undefined | null, derivePath: string, seedType: ExtendedSeedType, pairType: PairType = DEFAULT_PAIR_TYPE): AddressState {
   const seed = newSeed(_seed, seedType);
   const address = addressFromSeed(seed, derivePath, pairType);
 
@@ -107,16 +108,14 @@ function generateSeed (_seed: string | undefined | null, derivePath: string, see
   };
 }
 
-function updateAddress (seed: string, derivePath: string, seedType: ExtendedSeedType, pairType: PairType): AddressState {
+function updateAddress(seed: string, derivePath: string, seedType: ExtendedSeedType, pairType: PairType): AddressState {
   let address: string | null = null;
   let deriveValidation: DeriveValidationOutput = deriveValidate(seed, seedType, derivePath, pairType);
   let isSeedValid = seedType === 'raw' || seedType === 'stellar'
     ? rawValidate(seed)
     : mnemonicValidate(seed);
 
-  if (seedType === 'raw') {
-    isSeedValid = rawValidate(seed);
-  } else {
+  if (seedType !== 'raw' && seedType !== 'stellar') {
     const words = seed.split(' ');
 
     if (pairType === 'ed25519-ledger' && words.length === 25) {
@@ -149,14 +148,14 @@ function updateAddress (seed: string, derivePath: string, seedType: ExtendedSeed
   };
 }
 
-function createAccount (seed: string, derivePath: string, pairType: PairType, { genesisHash, name, tags = [] }: CreateOptions, password: string, success: string): ActionStatus {
+function createAccount(seed: string, derivePath: string, pairType: PairType, { genesisHash, name, tags = [] }: CreateOptions, password: string, success: string): ActionStatus {
   const commitAccount = () =>
     keyring.addUri(getSuri(seed, derivePath, pairType), password, { genesisHash, isHardware: false, name, tags }, pairType === 'ed25519-ledger' ? 'ed25519' : pairType);
 
   return tryCreateAccount(commitAccount, success);
 }
 
-function Create ({ className = '', onClose, onStatusChange, seed: propsSeed, type: propsType }: CreateProps): React.ReactElement<CreateProps> {
+function Create({ className = '', onClose, onStatusChange, seed: propsSeed, type: propsType }: CreateProps): React.ReactElement<CreateProps> {
   const { t } = useTranslation();
   const { api, isDevelopment, isEthereum } = useApi();
   const { isLedgerEnabled } = useLedger();
